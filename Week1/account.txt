@@ -1,0 +1,12 @@
+AnHuu 321 0
+HuuAn 123 2
+Abc 123 1
+PhamAn 123333 1
+Convitquay 123 1
+DangTuanLinh dangtuanlinh 2
+PhamHuuAn phamhuuan 2
+MotConVit motconvit 2
+ThanLanCon thanlancon 1
+ConLatDat conlatdat 0
+HaAnhThu mottconvit 1
+Huhu 123 1
