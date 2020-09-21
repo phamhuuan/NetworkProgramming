@@ -328,4 +328,7 @@ void exitFunction() {
 	printf("Thanks for using my application!\n");
 	printf("Visit me at github: https://github.com/phamhuuan/NetworkProgramming\n");
 	Reset
+	free(username);
+	free(password);
+	free(isLogin);
 }
