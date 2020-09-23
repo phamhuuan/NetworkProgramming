@@ -9,15 +9,34 @@ FILE *f;
 char *username, *password;
 int *isLogin;
 
+// ham dang ki tai khoan
 void registerFunction();
+
+// ham active tai khoan
 void activeFunction();
+
+// ham login
 void loginFunction();
+
+// ham tim kiem tai khoan
 void searchFunction();
+
+// ham thay doi mat khau
 void changePasswordFunction();
+
+// ham dang xuat
 void logoutFunction();
+
+// ham thoat app
 void exitFunction();
+
+// ham ghi du lieu vao file
 void writeFile();
+
+// ham thay doi trang thai cua mot user trong list
 void updateList(char *username, int status);
+
+// ham thay doi mat khau cua mot user trong list
 void updateList2(char *username, char *password);
 
 int main() {
@@ -139,6 +158,7 @@ int checkExistAccount() {
 }
 
 int checkIsLoggedIn() {
+	// kiem tra bien isLogin
 	return *isLogin;
 }
 
@@ -150,7 +170,7 @@ checkPassword:
 	if (strcmp(temp->element.password, password) != 0) {
 		// neu sai mat khau
 		if (--*timeInputPasswordRemaining < 1) {
-			// neu nhap sai mat khau qua so lan thi tai khoan se bi block
+			// neu nhap sai mat khau qua so lan thi tai khoan se bi block va cap nhat lai vao file
 			printError("Error: Wrong password, your account is blocked\n")
 			updateList(username, BLOCKED);
 			writeFile();
@@ -163,6 +183,7 @@ checkPassword:
 			goto checkPassword;
 		}	
 	} else {
+		// neu dung password
 		free(timeInputPasswordRemaining);
 		return TRUE;
 	}
@@ -174,20 +195,26 @@ void checkActivationCode() {
 	activationCode = (char *)malloc(sizeof(char) * 10);
 	timeInputActivationCodeRemaining = (int *)malloc(sizeof(int));
 	*timeInputActivationCodeRemaining = MAX_TIMES;
+	// yeu cau nguoi dung nhap ma kich hoat
 	inputString("Activation code: ", 10, activationCode);
 checkActivationCode:
+	// kiem tra ma kich hoat
 	if (strcmp(activationCode, ACTIVATION_CODE) != 0) {
+		// neu ma kich hoat sai
 		if (--*timeInputActivationCodeRemaining < 1) {
+			// neu da sai qua MAX_TIMES thi block tai khoan va ghi lai vao file
 			printError("Error: Wrong activation code, your account is blocked\n")
 			updateList(username, BLOCKED);
 			writeFile();
 			free(activationCode);
 		} else {
+			// neu chua sai qua so lan thi yeu cau nhap lai va hien thi so lan nhap con lai
 			printError2("Error: Wrong activation code! %d time(s) remaining\n", *timeInputActivationCodeRemaining)
 			inputString("Activation code: ", 10, activationCode);
 			goto checkActivationCode;
 		}
 	} else {
+		// neu ma kich hoat dung thi kich hoat tai khoan va cap nhat lai vao file
 		free(timeInputActivationCodeRemaining);
 		printSuccess("Activate account success\n")
 		updateList(username, ACTIVE);
@@ -197,6 +224,7 @@ checkActivationCode:
 	}
 }
 
+// chuyen trang thai tu so sang chu
 char *convertStatus(int status) {
 	switch (status)
 	{
@@ -212,15 +240,19 @@ char *convertStatus(int status) {
 }
 
 void registerFunction () {
+	// kiem tra xem hien tai da login chua, neu chua login moi duoc dang ki
 	if (checkIsLoggedIn()) {
 		printWarning2("Already logged in as %s\nYou have to log out to create new account\n", username)
 		return;
 	}
+	// nhap username va password
 	inputUsername();
 	inputPassword();
+	// kiem tra xem tai khoan da ton tai hay chua
 	if (checkExistAccount()) {
 		printError2("Error: Account for username \"%s\" already exists!\n", username)
 	} else {
+		// neu chua ton tai thi tao tai khoan moi, ghi lai ra file
 		elementtype *user = (elementtype *)malloc(sizeof(elementtype));
 		strcpy(user->username, username);
 		strcpy(user->password, password);
@@ -233,21 +265,28 @@ void registerFunction () {
 }
 
 void activeFunction() {
+	// kiem tra xem hien tai da login chua, neu chua login moi duoc active tai khoan khac
 	if (checkIsLoggedIn()) {
 		printWarning2("Already logged in as %s\nYou have to log out to active another account\n", username)
 		return;
 	}
+	// nhap username va password
 	inputUsername();
 	inputPassword();
+	// kiem tra tai co ton tai hay khong
 	if (!checkExistAccount()) {
 		printError2("Error: Account for username \"%s\" does not exist!\n", username)
 	} else {
+		// neu tai khoan ton tai thi kiem tra mat khau xem co dung khong
 		if (checkPassword()) {
+			// neu dung va tai khoan da duoc active
 			if (temp->element.status == ACTIVE) {
 				printWarning("This account has been activated!\n")
 			} else if (temp->element.status == BLOCKED) {
+				// neu tai khoan da bi block
 				printError("This account has been blocked!\n");
 			} else {
+				// neu tai khoan dang o trang thai idle thi kiem tra ma kich hoat
 				checkActivationCode();
 			}
 		}
