@@ -11,6 +11,7 @@
 int hostname_to_ip(char *  , char *);
 int ip_to_hostname(char *, char *);
 int checkValidIp(char *);
+int checkValidDomain(char *);
 void printHelper();
 void printVersion();
 void printContact();
@@ -54,7 +55,122 @@ int main(int argc , char *argv[]) {
 	}
 }
 
+int checkValidIp(char *ip) {
+	int count = 0;
+	char *token = strtok(ip, ".");
+	while(token != NULL) {
+		count++;
+		if (count > 4) {
+			return 0;
+		}
+		int *tmp = (int *)malloc(sizeof(int));
+		*tmp = atoi(token);
+		if (*tmp > 255 || *tmp < 0) {
+			return 0;
+		}
+		char *tmp2 = (char *)malloc(sizeof(char) * 20);
+		sprintf(tmp2, "%d", *tmp);
+		if (strcmp(tmp2, token) != 0) {
+			return 0;
+		}
+		free(tmp2);
+		free(tmp);
+		token = strtok(NULL, ".");
+	}
+	if (count < 4) {
+		return 0;
+	}
+	return 1;
+}
+
+int isNumber(char c) {
+	if (c >= '0' && c <= '9') {
+		return 1;
+	}
+	return 0;
+}
+
+int isLetter(char c) {
+	if (c >= 'a' && c <= 'z') {
+		return 1;
+	}
+	if (c >= 'A' && c <= 'Z') {
+		return 1;
+	}
+	return 0;
+}
+
+int isDot(char c) {
+	return c == '.';
+}
+
+int isDash(char c) {
+	return c == '-';
+}
+
+int isSubValid(char *string) {
+	int length = strlen(string);
+	if (isLetter(string[0]) || isNumber(string[0])) {
+		if (isLetter(string[length - 1]) || isNumber(string[length - 1])) {
+			for (int i = 1; i < length - 1; i++) {
+				if (!isLetter(string[i]) && !isNumber(string[i]) && !isDash(string[i])) {
+					return 0;
+				}
+			}
+			return 1;
+		} else {
+			return 0;
+		}
+	} else {
+		return 0;
+	}
+}
+
+int checkValidDomain(char *domain) {
+	int length = strlen(domain);
+	for (int i = 1; i < length - 1; i++) {
+		if (isDot(domain[i]) && isDot(domain[i - 1])) {
+			return 0;
+		}
+	}
+	char *token = strtok(domain, ".");
+	if (token == NULL) {
+		return 0;
+	}
+	if (!isSubValid(token)) {
+		return 0;
+	}
+	if (strlen(token) < 3 || strlen(token) > 63) {
+		return 0;
+	}
+	char *subToken = (char*)malloc(sizeof(char) * 64);
+	while (1) {
+		token = strtok(NULL, ".");
+		if (token == NULL) {
+			break;
+		}
+		strcpy(subToken, token);
+	}
+	if (strlen(subToken) < 2 || strlen(subToken) > 6) {
+		return 0;
+	}
+	for (int i = 0; i < strlen(subToken) - 1; i++) {
+		if (isDash(subToken[i])) {
+			return 0;
+		}
+	}
+	return 1;
+}
+
 int ip_to_hostname(char *hostname, char *ip) {
+	char *tmpIp = (char *)malloc(sizeof(char) * 20);
+	strcpy(tmpIp, ip);
+	if (!checkValidIp(tmpIp)) {
+		printError2("%s is not a valid ip address\n", ip);
+		free(tmpIp);
+		return 0;
+	}
+	free(tmpIp);
 	int rv;
 	struct sockaddr_in serverAddress;
 	memset(&serverAddress, 0, sizeof(serverAddress));
@@ -68,8 +184,15 @@ int ip_to_hostname(char *hostname, char *ip) {
 	return 1;
 }
 
-
 int hostname_to_ip(char *hostname , char *ip) {
+	char *tmpHostname = (char *)malloc(sizeof(char) * NI_MAXHOST);
+	strcpy(tmpHostname, ip);
+	if (!checkValidDomain(tmpHostname)) {
+		printError2("%s is not a valid domain\n", hostname)
+		free(tmpHostname);
+		return 0;
+	}
+	free(tmpHostname);
 	struct addrinfo hints, *servinfo, *p;
 	struct sockaddr_in *h;
 	int rv;
@@ -80,9 +203,9 @@ int hostname_to_ip(char *hostname , char *ip) {
 
 	if ((rv = getaddrinfo(hostname , "http" , &hints , &servinfo)) != 0) {
 		printError("Not found information\n")
+		// fprintf(stderr, "%s\n", gai_strerror(rv));
 		return 0;
 	}
-
 	// loop through all the results and connect to the first we can
 	for(p = servinfo; p != NULL; p = p->ai_next) {
 		h = (struct sockaddr_in *) p->ai_addr;
@@ -98,6 +221,7 @@ int hostname_to_ip(char *hostname , char *ip) {
 		free(hostname2);
 		return 1;
 	}
+	return 1;
 }
 
 void printHelper() {
