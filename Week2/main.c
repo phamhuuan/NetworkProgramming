@@ -127,6 +127,13 @@ int isSubValid(char *string) {
 }
 
 int checkValidDomain(char *domain) {
+	char *domain2 = (char *)malloc(sizeof(char) * 100);
+	strcpy(domain2, domain);
+	if (checkValidIp(domain2)) {
+		free(domain2);
+		return 1;
+	}
+	free(domain2);
 	int length = strlen(domain);
 	for (int i = 1; i < length - 1; i++) {
 		if (isDot(domain[i]) && isDot(domain[i - 1])) {
@@ -186,7 +193,7 @@ int ip_to_hostname(char *hostname, char *ip) {
 
 int hostname_to_ip(char *hostname , char *ip) {
 	char *tmpHostname = (char *)malloc(sizeof(char) * NI_MAXHOST);
-	strcpy(tmpHostname, ip);
+	strcpy(tmpHostname, hostname);
 	if (!checkValidDomain(tmpHostname)) {
 		printError2("%s is not a valid domain\n", hostname)
 		free(tmpHostname);
