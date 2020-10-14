@@ -1,16 +1,21 @@
+#include <netdb.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 // input from shell
-extern void inputString(char *holder, int size, char *result);
+void inputString(char *holder, int size, char *result);
 
 // menu
-extern void menu();
-extern void menu2();
+void menu();
+void menu2();
 
 // danh sach lien ket
 typedef struct
 {
-	char username[30];
-	char password[30];
-	int status;
+	char username[100];
+	char password[100];
+	char status[2];
+	char homepage[100];
 } user;
 
 typedef user elementtype;
@@ -65,6 +70,7 @@ extern void freeList();
 #define printError(a) FgRed Bright printf(a); Reset
 #define printError2(a, b) FgRed Bright printf(a, b); Reset
 #define printSuccess(a) FgGreen Bright printf(a); Reset
+#define printSuccess2(a, b) FgGreen Bright printf(a, b); Reset
 #define printWarning(a) FgYellow Bright printf(a); Reset
 #define printWarning2(a, b) FgYellow Bright printf(a, b); Reset
 
@@ -85,3 +91,32 @@ extern void freeList();
 // boolean
 #define TRUE 1
 #define FALSE 0
+
+#define BUFF_SIZE 4096
+
+int initSocket(int *sockfd);
+int hostname_to_ip(char *  , char *);
+int ip_to_hostname(char *, char *);
+int startServer(int *sockfd, struct sockaddr_in *servaddr, const unsigned int SERVER_PORT);
+int startClient(char *ip, struct sockaddr_in *servaddr, const unsigned int SERVER_PORT);
+int checkValidPort(const unsigned int SERVER_PORT);
+int checkValidIp(char *ip);
+int checkValidDomain(char *domain);
+int listenMessage(int *sockfd, char *buff, struct sockaddr_in *addr);
+int sendMessage(int *sockfd, char *buff, struct sockaddr_in *addr);
+
+#define FIND_ACCOUNT 0
+#define FIND_ACCOUNT_NOT_FOUND 1
+#define FIND_ACCOUNT_FOUND 2
+
+#define REGISTER 3
+#define REGISTER_SUCCESS 4
+
+#define BLOCK_ACCOUNT 5
+#define BLOCK_ACCOUNT_SUCCESS 6
+
+#define ACTIVE_ACCOUNT 7
+#define ACTIVE_ACCOUNT_SUCCESS 8
+
+#define CHANGE_PASSWORD 9
+#define CHANGE_PASSWORD_SUCCESS 10

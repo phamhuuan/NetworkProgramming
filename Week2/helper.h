@@ -1,40 +1,5 @@
-// input from shell
-extern void inputString(char *holder, int size, char *result);
-
-// menu
-extern void menu();
-extern void menu2();
-
-// danh sach lien ket
-typedef struct
-{
-	char username[30];
-	char password[30];
-	int status;
-} user;
-
-typedef user elementtype;
-
-typedef struct node node;
-typedef struct node
-{
-	elementtype element;
-	node *next;
-} node;
-
-node *root, *cur, *prev, *temp;
-
-extern node *makeNewNode(elementtype element);
-extern void displayNode(node *p);
-extern void insertAtHead(elementtype element);
-extern void insertAfter(elementtype element);
-extern void insertBefore(elementtype element);
-extern void deleteFirst();
-extern void deleteNode();
-#define traversingList for (node *p = root; p != NULL; p = p->next)
-extern node *find(char *username);
-extern node *reverseList(node *root);
-extern void freeList();
+#include <stdio.h>
+#include <string.h>
 
 // color
 #define Reset printf("\x1b[0m");
@@ -64,24 +29,32 @@ extern void freeList();
 // print
 #define printError(a) FgRed Bright printf(a); Reset
 #define printError2(a, b) FgRed Bright printf(a, b); Reset
+#define printError3(a, b, c) FgRed Bright printf(a, b, c); Reset
 #define printSuccess(a) FgGreen Bright printf(a); Reset
 #define printWarning(a) FgYellow Bright printf(a); Reset
 #define printWarning2(a, b) FgYellow Bright printf(a, b); Reset
 
-// status
-#define BLOCKED 0
-#define ACTIVE 1
-#define IDLE 2
+#define printTagUsage(a, b) printf("%-15s\t%s\n", a, b);
 
-// activation code
-#define ACTIVATION_CODE "LTM121216"
+// type
+#define TYPE_IP_ADDRESS "1"
+#define TYPE_DOMAIN "2"
 
-// data file
-#define DATA_FILE "account.txt"
+// ten file dich
+#define BIN_FILE "resolver"
+#define RUN_BIN_FILE "./resolver"
+// usage
+#define HELP_TAG "-h"
+#define HELP_TAG2 "--help"
+#define SHOW_USAGE "./resolver -h"
+#define SHOW_USAGE2 "./resolver --help"
 
-// max times to enter password/code
-#define MAX_TIMES 3
+#define VERSION_TAG "-v"
+#define VERSION_TAG2 "--version"
 
-// boolean
-#define TRUE 1
-#define FALSE 0
+#define CONTACT_TAG "--contact"
+
+#define SOURCE_CODE_TAG "--source"
+
+// update date
+#define UPDATE_DATE "24/09/2020"

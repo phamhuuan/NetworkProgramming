@@ -8,9 +8,10 @@ extern void menu2();
 // danh sach lien ket
 typedef struct
 {
-	char username[30];
-	char password[30];
+	char username[300];
+	char password[300];
 	int status;
+	char homepage[100];
 } user;
 
 typedef user elementtype;
@@ -65,6 +66,7 @@ extern void freeList();
 #define printError(a) FgRed Bright printf(a); Reset
 #define printError2(a, b) FgRed Bright printf(a, b); Reset
 #define printSuccess(a) FgGreen Bright printf(a); Reset
+#define printSuccess2(a, b) FgGreen Bright printf(a, b); Reset
 #define printWarning(a) FgYellow Bright printf(a); Reset
 #define printWarning2(a, b) FgYellow Bright printf(a, b); Reset
 
@@ -85,3 +87,40 @@ extern void freeList();
 // boolean
 #define TRUE 1
 #define FALSE 0
+
+// ham dang ki tai khoan
+void registerFunction();
+
+// ham active tai khoan
+void activeFunction();
+
+// ham login
+void loginFunction();
+
+// ham tim kiem tai khoan
+void searchFunction();
+
+// ham thay doi mat khau
+void changePasswordFunction();
+
+// ham dang xuat
+void logoutFunction();
+
+// ham thoat app
+void exitFunction();
+
+void visitIpFunction();
+
+void visitDomainFunction();
+
+// ham ghi du lieu vao file
+void writeFile();
+
+// ham thay doi trang thai cua mot user trong list
+void updateList(char *username, int status);
+
+// ham thay doi mat khau cua mot user trong list
+void updateList2(char *username, char *password);
+
+void encode(char *, char *);
+void decode(char *, char *);
